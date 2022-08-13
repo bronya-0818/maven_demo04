@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zx.dao.ClazzDAO">
+
+    <select id="selectClazzVo" resultType="com.zx.entity.ClazzVo">
+        SELECT clazz_id, clazz_name, COUNT(*) post_count
+        FROM clazz,post_clazz_relationship
+        WHERE clazz.id = post_clazz_relationship.clazz_id
+        GROUP BY clazz_id
+        ORDER BY post_count DESC
+    </select>
+</mapper>

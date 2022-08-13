@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zx.dao.PostDAO">
+
+
+
+
+
+
+ <select id="selectByExampleWithClazz" parameterType="map" resultMap="PostVoResultMap"
+         resultType="com.zx.entity.PostVo">
+  select
+  <if test="example.distinct">
+   distinct
+  </if>
+  post.id, post.title, post.user_id, post.first_picture, post.summary, post.mark, post.content,
+  post.recommend_status, post.reward_status,
+  post.copyright_status, post.comment_status, post.publish_status, post.read_count, post.create_time,
+  post.update_time
+  ,user.nickname,user.picture
+  from post,user
+  <if test="clazzId!=null">
+   ,post_clazz_relationship,clazz
+  </if>
+  <if test="_parameter != null">
+   <where>
+    <foreach collection="example.oredCriteria" item="criteria" separator="or">
+     <if test="criteria.valid">
+      <trim prefix="(" prefixOverrides="and" suffix=")">
+       <foreach collection="criteria.criteria" item="criterion">
+        <choose>
+         <when test="criterion.noValue">
+          and ${criterion.condition}
+         </when>
+         <when test="criterion.singleValue">
+          and ${criterion.condition} #{criterion.value}
+         </when>
+         <when test="criterion.betweenValue">
+          and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+         </when>
+         <when test="criterion.listValue">
+          and ${criterion.condition}
+          <foreach close=")" collection="criterion.value" item="listItem" open="("
+                   separator=",">
+           #{listItem}
+          </foreach>
+         </when>
+        </choose>
+       </foreach>
+      </trim>
+     </if>
+    </foreach>
+    <if test="clazzId != null">
+     and post_clazz_relationship.clazz_id = #{clazzId,jdbcType=INTEGER}
+     and post.id = post_clazz_relationship.post_id and clazz.id = post_clazz_relationship.clazz_id
+    </if>
+    and post.user_id = user.id
+   </where>
+  </if>
+  <if test="example.orderByClause != null">
+   order by ${example.orderByClause}
+  </if>
+ </select>
+
+
+ <resultMap id="PostVoResultMap" type="PostVo">
+  <result property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+  <result property="title" column="title" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  <result property="userId" column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+  <result property="firstPicture" column="first_picture" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  <result property="summary" column="summary" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  <result property="mark" column="mark" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+  <result property="content" column="content" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  <result property="recommendStatus" column="recommend_status" javaType="java.lang.Boolean" jdbcType="BIT"/>
+  <result property="rewardStatus" column="reward_status" javaType="java.lang.Boolean" jdbcType="BIT"/>
+  <result property="copyrightStatus" column="copyright_status" javaType="java.lang.Boolean" jdbcType="BIT"/>
+  <result property="commentStatus" column="comment_status" javaType="java.lang.Boolean" jdbcType="BIT"/>
+  <result property="publishStatus" column="publish_status" javaType="java.lang.Boolean" jdbcType="BIT"/>
+  <result property="readCount" column="read_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+  <result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+  <result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+  <result property="clazzId" column="clazz_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+  <result property="clazzName" column="clazz_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  <result property="nickname" column="nickname" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  <result property="picture" column="picture" javaType="java.lang.String" jdbcType="VARCHAR"/>
+ </resultMap>
+ </mapper>
